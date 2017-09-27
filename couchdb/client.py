@@ -34,6 +34,7 @@ import sys
 import socket
 
 from couchdb import http, json, util
+from couchdb.query_utils import Q
 
 __all__ = ['Server', 'Database', 'Document', 'ViewResults', 'Row']
 __docformat__ = 'restructuredtext en'
@@ -810,6 +811,57 @@ class Database(object):
         """
         status, headers, data = self.resource.post_json('_find', mango_query)
         return map(wrapper or Document, data.get('docs', []))
+
+    def filter(self, *args, **kwargs):
+        """Execute a mango find-query against the database.
+
+        Note: only available for CouchDB version >= 2.0.0
+
+        More information on the `mango_query` structure can be found here:
+          http://docs.couchdb.org/en/master/api/database/find.html#find-selectors
+
+        >>> server = Server()
+        >>> db = server.create('python-tests')
+        >>> db['johndoe'] = dict(type='Person', name='John Doe', hobby=dict(main='read', second='game'))
+        >>> db['maryjane'] = dict(type='Person', name='Mary Jane', hobby=dict(main='read'))
+        >>> db['sillybilly'] = dict(type='Person', name='Silly Billy', hobby=dict(main='read', second='game'))
+        >>> db['billysilly'] = dict(type='Person', name='Billy Silly', hobby=dict(main='swim', second='horse riding'))
+        >>> db['gotham'] = dict(type='City', name='Gotham City')
+        >>> for row in db.filter(name__eq='John Doe')
+        ...    print(row['name'])
+        John Doe
+        >>> from couchdb.query_utils import Q
+        >>> data = db.filter(Q(name__regex='(*UTF)(?i)illy'))
+        >>> for row in data:
+        ...    print(row['name'])
+        Silly Billy
+        Billy Silly
+        >>> data = db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read'))
+        >>> for row in data:                          # doctest: +SKIP
+        ...    print(row['name'])                               # doctest: +SKIP
+        Silly Billy
+        >>> del server['python-tests']
+
+        :param args: Q objects, parse into a query - Request JSON Object selector:
+                     http://docs.couchdb.org/en/master/api/database/find.html#post--db-_find
+        :param kwargs: Request JSON Object:
+                     http://docs.couchdb.org/en/master/api/database/find.html#post--db-_find
+        :return: list of dicts (docs)
+        """
+        limit = kwargs.pop('limit', 30)
+        fields = kwargs.pop('fields', [])
+        sort = kwargs.pop('sort', [])
+        if args:
+            selector = args[0].P
+        elif kwargs:
+            selector = Q(**kwargs).P
+        else:
+            raise Exception('Need query, for example: name__eq = "Name" or used Q for complex conditions')
+        query = dict(selector=selector, limit=limit, fields=fields, sort=sort)
+        data = self.find(mango_query=query)
+        return data
+
+
 
     def explain(self, mango_query):
         """Explain a mango find-query.
