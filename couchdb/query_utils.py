@@ -30,6 +30,12 @@ class Q:
         """
         field_cond_list = self.field_cond.split('__')
         field = field_cond_list[:-1]
+        for i, subf in enumerate(field):
+            if '_L_' in subf:
+                subf_list = subf.split('_L_')
+                field.insert(i + 1, '$' + subf_list[1])
+                field[i] = subf_list[0]
+
         cond = '$' + field_cond_list[-1]
         parsed_field_cond = reduce(lambda x, y: {y: x},
                                    reversed(field + [cond, self.val]))
