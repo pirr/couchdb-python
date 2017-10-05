@@ -824,23 +824,22 @@ class Database(object):
         >>> db = server.create('python-tests')
         >>> db['johndoe'] = dict(type='Person', name='John Doe', hobby=dict(main='read', second='game'), feats=[dict(feat1=1, feat2=2), dict(feat1=10, feat2=20)])
         >>> db['maryjane'] = dict(type='Person', name='Mary Jane', hobby=dict(main='read'), feats=[dict(feat1=3, feat2=4), dict(feat1=30, feat2=40)])
-        >>> db['sillybilly'] = dict(type='Person', name='Silly Billy', hobby=dict(main='read', second='game'), feats=[dict(feat1=5, feat2=6), dict(feat1=50, feat2=60))
-        >>> db['billysilly'] = dict(type='Person', name='Billy Silly', hobby=dict(main='swim', second='horse riding'), feats=[dict(feat1=1, feat2=2), dict(feat1=30, feat2=60))
-        >>> db['gotham'] = dict(type='City', name='Gotham City')
-        >>> for row in db.filter(name__eq='John Doe')
+        >>> db['sillybilly'] = dict(type='Person', name='Silly Billy', hobby=dict(main='read', second='game'), feats=[dict(feat1=5, feat2=6), dict(feat1=50, feat2=60)])
+        >>> db['billysilly'] = dict(type='Person', name='Billy Silly', hobby=dict(main='swim', second='horse riding'), feats=[dict(feat1=1, feat2=2), dict(feat1=30, feat2=60)])
+        >>> for row in db.filter(name__eq='John Doe'):
         ...    print(row['name'])
         John Doe
         >>> from couchdb.query_utils import Q
         >>> data = db.filter(Q(name__regex='(*UTF)(?i)illy'))
         >>> for row in data:
         ...    print(row['name'])
-        Silly Billy
         Billy Silly
-        >>> data = db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read'))
-        >>> for row in data:                          # doctest: +SKIP
-        ...    print(row['name'])                               # doctest: +SKIP
         Silly Billy
-        >>> data = db.filter(Q(feats_L_elemMatch__feat2__in = [20, 4]))
+        >>> data = db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read'))
+        >>> for row in data:
+        ...    print(row['name'])
+        Silly Billy
+        >>> data = db.filter(feats_L_elemMatch__feat2__in = [20, 4])
         >>> for row in data:
         ...    print(row['name'])
         John Doe
@@ -863,8 +862,6 @@ class Database(object):
         else:
             raise Exception('Need query, for example: name__eq = "Name" or used Q for complex conditions')
         query = dict(selector=selector, limit=limit, fields=fields, sort=sort)
-        print(query)
-
         data = self.find(mango_query=query)
         return data
 
