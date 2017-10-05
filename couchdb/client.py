@@ -848,7 +848,7 @@ class Database(object):
                      http://docs.couchdb.org/en/master/api/database/find.html#post--db-_find
         :param kwargs: Request JSON Object:
                      http://docs.couchdb.org/en/master/api/database/find.html#post--db-_find
-        :return: list of dicts (docs)
+        :return: the query results as a list of `Document`
         """
         limit = kwargs.pop('limit', 30)
         fields = kwargs.pop('fields', [])
