@@ -829,18 +829,16 @@ class Database(object):
         >>> for row in db.filter(name__eq='John Doe'):
         ...    print(row['name'])
         John Doe
-        >>> from couchdb.query_utils import Q
-        >>> data = db.filter(Q(name__regex='(*UTF)(?i)illy'))
+        >>> data = db.filter(name__regex='(*UTF)(?i)illy')
         >>> for row in data:
         ...    print(row['name'])
         Billy Silly
         Silly Billy
-        >>> data = db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read'))
-        >>> for row in data:
+        >>> from couchdb.query_utils import Q
+        >>> for row in db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read')):
         ...    print(row['name'])
         Silly Billy
-        >>> data = db.filter(feats_L_elemMatch__feat2__in = [20, 4])
-        >>> for row in data:
+        >>> for row in db.filter(feats_L_elemMatch__feat2__in = [20, 4]):
         ...    print(row['name'])
         John Doe
         Mary Jane
