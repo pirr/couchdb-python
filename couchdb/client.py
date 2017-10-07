@@ -829,8 +829,7 @@ class Database(object):
         >>> for row in db.filter(name__eq='John Doe'):
         ...    print(row['name'])
         John Doe
-        >>> data = db.filter(name__regex='(*UTF)(?i)illy')
-        >>> for row in data:
+        >>> for row in db.filter(name__regex='(*UTF)(?i)illy'):
         ...    print(row['name'])
         Billy Silly
         Silly Billy
