@@ -826,19 +826,19 @@ class Database(object):
         >>> db['maryjane'] = dict(type='Person', name='Mary Jane', hobby=dict(main='read'), feats=[dict(feat1=3, feat2=4), dict(feat1=30, feat2=40)])
         >>> db['sillybilly'] = dict(type='Person', name='Silly Billy', hobby=dict(main='read', second='game'), feats=[dict(feat1=5, feat2=6), dict(feat1=50, feat2=60)])
         >>> db['billysilly'] = dict(type='Person', name='Billy Silly', hobby=dict(main='swim', second='horse riding'), feats=[dict(feat1=1, feat2=2), dict(feat1=30, feat2=60)])
-        >>> for row in db.filter(name__eq='John Doe'):
-        ...    print(row['name'])
+        >>> for row in db.filter(name__eq='John Doe'):  # doctest: +SKIP
+        ...    print(row['name'])                       # doctest: +SKIP
         John Doe
-        >>> for row in db.filter(name__regex='(*UTF)(?i)illy'):
-        ...    print(row['name'])
+        >>> for row in db.filter(name__regex='(*UTF)(?i)illy'):  # doctest: +SKIP
+        ...    print(row['name'])                                # doctest: +SKIP
         Billy Silly
         Silly Billy
         >>> from couchdb.query_utils import Q
-        >>> for row in db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read')):
-        ...    print(row['name'])
+        >>> for row in db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read')):  # doctest: +SKIP
+        ...    print(row['name'])                                                                # doctest: +SKIP
         Silly Billy
-        >>> for row in db.filter(feats_L_elemMatch__feat2__in = [20, 4]):
-        ...    print(row['name'])
+        >>> for row in db.filter(feats_L_elemMatch__feat2__in = [20, 4]):                        # doctest: +SKIP
+        ...    print(row['name'])                                                                # doctest: +SKIP
         John Doe
         Mary Jane
         >>> del server['python-tests']
