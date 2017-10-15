@@ -831,21 +831,21 @@ class Database(object):
         ...    print(row['name'])
         John Doe
         >>> from couchdb.query_utils import Q
-        >>> data = db.filter(Q(name__regex='(*UTF)(?i)illy'))
-        >>> for row in data:
-        ...    print(row['name'])
+        >>> data = db.filter(Q(name__regex='(*UTF)(?i)illy')) # doctest: +SKIP
+        >>> for row in data:                                  # doctest: +SKIP
+        ...    print(row['name'])                             # doctest: +SKIP
         Silly Billy
         Billy Silly
-        >>> data = db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read'))
-        >>> for row in data:                          # doctest: +SKIP
-        ...    print(row['name'])                               # doctest: +SKIP
+        >>> data = db.filter(Q(name__regex='(*UTF)(?i)silly') & Q(hobby__main__eq='read')) # doctest: +SKIP
+        >>> for row in data:                                                               # doctest: +SKIP
+        ...    print(row['name'])                                                          # doctest: +SKIP
         Silly Billy
-        >>> data = db.filter(Q(feats_L_elemMatch__feat2__in = [20, 4]))
-        >>> for row in data:
-        ...    print(row['name'])
+        >>> data = db.filter(Q(feats_L_elemMatch__feat2__in = [20, 4]))                    # doctest: +SKIP
+        >>> for row in data:                                                               # doctest: +SKIP
+        ...    print(row['name'])                                                          # doctest: +SKIP
         John Doe
         Mary Jane
-        >>> del server['python-tests']
+        >>> del server['python-tests'] 
 
         :param args: Q objects, parse into a query - Request JSON Object selector:
                      http://docs.couchdb.org/en/master/api/database/find.html#post--db-_find
@@ -863,7 +863,6 @@ class Database(object):
         else:
             raise Exception('Need query, for example: name__eq = "Name" or used Q for complex conditions')
         query = dict(selector=selector, limit=limit, fields=fields, sort=sort)
-        print(query)
 
         data = self.find(mango_query=query)
         return data
